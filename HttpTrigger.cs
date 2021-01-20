@@ -11,9 +11,9 @@ namespace Corlate.Function
 {
     public static class HttpTrigger
     {
-        [FunctionName("HttpStart")]
+        [FunctionName("Scream")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "scream/hello")] HttpRequest req,
             [Queue("outqueue"), StorageAccount("AzureWebJobsStorage")] ICollector<string> msg,
             ILogger log)
         {
@@ -35,7 +35,7 @@ namespace Corlate.Function
 
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+                : $"Passed name: {name}. This HTTP triggered function executed successfully.";
 
             return new OkObjectResult(responseMessage);
         }
