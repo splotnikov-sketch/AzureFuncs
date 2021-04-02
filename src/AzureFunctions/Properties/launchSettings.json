@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AzureFunctions": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "Environment": "Local"
+      }
+    }
+  }
+}
