@@ -1,4 +1,4 @@
-﻿namespace AzureFunctions.Configuration
+﻿namespace AzureFunctions.Configuration.Options
 {
     public class ConfigurationItems
     {
