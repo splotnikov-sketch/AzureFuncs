@@ -39,7 +39,7 @@ namespace AzureFunctions.Functions
             var secretValue = _configurationItems.SecretValue;
 
             return
-                new OkObjectResult($"Local Value : '{localSettings}' | Common Value : '{commonValue}' | Secret Value : '{secretValue}'");
+                new OkObjectResult($"Local Value : '{localSettings}' | Global Value : '{commonValue}' | Secret Value : '{secretValue}'");
         }
 
 

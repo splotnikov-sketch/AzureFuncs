@@ -1,7 +1,10 @@
 ﻿using System.IO;
 using System.Reflection;
 using AzureFunctions;
-using AzureFunctions.Commands.Cosmos;
+using AzureFunctions.Commands.Cosmos.Add;
+using AzureFunctions.Commands.Cosmos.Entities;
+using AzureFunctions.Commands.Cosmos.Get;
+using AzureFunctions.Commands.Cosmos.Init;
 using AzureFunctions.Commands.IsItPrime;
 using AzureFunctions.Configuration.Options;
 using AzureFunctions.Infrastructure.Commands;
@@ -12,8 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace AzureFunctions
 {
-    
-    public class Startup: FunctionsStartup
+
+    public class Startup : FunctionsStartup
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
@@ -37,8 +40,10 @@ namespace AzureFunctions
         {
             services
                 .AddLogging()
-                .AddSingleton<ICommandHandler<IsItPrimeCommand, bool>, IsItPrimeCommandHandler>()
-                .AddSingleton<ICommandHandler<InitCosmosCommand, bool>, InitCosmosCommandHandler>();
+                .AddSingleton<ICommandHandler<IsItPrimeCommand, PrimeResult>, IsItPrimeCommandHandler>()
+                .AddSingleton<ICommandHandler<InitCosmosCommand, bool>, InitCosmosCommandHandler>()
+               .AddSingleton<ICommandHandler<GetNumberCommand, NumberEntity>, GetNumberCommandHandler>()
+               .AddSingleton<ICommandHandler<AddNumberCommand, NumberEntity>, AddNumberCommandHandler>();
 
             return services;
         }
@@ -46,7 +51,7 @@ namespace AzureFunctions
         private void Init(ServiceProvider serviceProvider)
         {
             var initCosmos = serviceProvider.GetRequiredService<ICommandHandler<InitCosmosCommand, bool>>();
-            
+
             initCosmos.Execute(new InitCosmosCommand()).GetAwaiter().GetResult();
         }
     }

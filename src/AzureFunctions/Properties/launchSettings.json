@@ -3,7 +3,7 @@
     "AzureFunctions": {
       "commandName": "Project",
       "environmentVariables": {
-        "Environment": "Local"
+        "Environment": "local"
       }
     }
   }

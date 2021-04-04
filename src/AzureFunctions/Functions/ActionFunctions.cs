@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,21 +17,19 @@ namespace AzureFunctions.Functions
 {
     public class ActionFunctions
     {
-        
-        private readonly ICommandHandler<IsItPrimeCommand, bool> _isItPrime;
+        private readonly ICommandHandler<IsItPrimeCommand, PrimeResult> _isItPrime;
 
-        public ActionFunctions(ICommandHandler<IsItPrimeCommand, bool> isItPrime)
+        public ActionFunctions(ICommandHandler<IsItPrimeCommand, PrimeResult> isItPrime)
         {
             _isItPrime = isItPrime;
         }
 
-     
 
         [FunctionName(nameof(IsItPrime))]
         [OpenApiOperation(operationId: nameof(IsItPrime), tags: new[] { "math" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "number", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "The **Number** parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(int), Description = "The OK response")]
+        [OpenApiParameter(name: "number", In = ParameterLocation.Query, Required = true, Type = typeof(long), Description = "The **Number** parameter")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(long), Description = "The OK response")]
         public async Task<IActionResult> IsItPrime([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "math/prime")] HttpRequest req, 
             ILogger log)
         {
@@ -49,29 +46,18 @@ namespace AzureFunctions.Functions
                 return new BadRequestObjectResult("Pass a number in the query string or in the request body for calculation.");
             }
 
-            if (!int.TryParse(numberStr, out var number))
+            if (!long.TryParse(numberStr, out var number))
             {
                 return new BadRequestObjectResult("Pass a number in the query string or in the request body for calculation.");
             }
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            var isItPrime = await _isItPrime.Execute(new IsItPrimeCommand
+            var result = await _isItPrime.Execute(new IsItPrimeCommand
             {
                 Number = number
             });
-            
-            stopwatch.Stop();
 
             return 
-                new OkObjectResult(new
-                {
-                    Number = number,
-                    IsPrime = isItPrime,
-                    ExecutionTime = stopwatch.Elapsed.ToString(@"mm\:ss"),
-                    IsCached = false
-                });
+                new OkObjectResult(result);
         }
     }
 }
