@@ -7,8 +7,8 @@ using Microsoft.Extensions.Options;
 
 namespace AzureFunctions.Commands.Cosmos
 {
-    public abstract class BaseCosmosCommandHandler<TCommand, TResult>: ICommandHandler<TCommand, TResult>
-        where TCommand: ICommand<TResult>
+    public abstract class BaseCosmosCommandHandler<TCommand, TResult> : ICommandHandler<TCommand, TResult>
+        where TCommand : ICommand<TResult>
     {
         public readonly CosmosOptions CosmosOptions;
         public CosmosClient CosmosClient { private set; get; }
@@ -18,12 +18,12 @@ namespace AzureFunctions.Commands.Cosmos
         protected BaseCosmosCommandHandler(IOptions<CosmosOptions> cosmosOptions)
         {
             CosmosOptions = cosmosOptions.Value;
-            CosmosClient =
-                new CosmosClient(CosmosOptions.EndpointUri, CosmosOptions.PrimaryKey,
-                                 new CosmosClientOptions
-                                 {
-                                     ApplicationName = Global.ApplicationName
-                                 });
+            CosmosClient = !string.IsNullOrWhiteSpace(CosmosOptions.ConnectionString)
+                               ? new CosmosClient(CosmosOptions.ConnectionString, new CosmosClientOptions
+                                                      {
+                                                          ApplicationName = Global.ApplicationName
+                                                      })
+                               : null;
         }
 
         public abstract Task<TResult> Execute(TCommand command);

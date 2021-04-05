@@ -16,6 +16,11 @@ namespace AzureFunctions.Commands.Cosmos.Init
         {
             try
             {
+                if (CosmosClient == null)
+                {
+                    return false;
+                }
+
                 Database database = await CosmosClient.CreateDatabaseIfNotExistsAsync(CosmosOptions.DatabaseId, 400);
 
                 Container container =

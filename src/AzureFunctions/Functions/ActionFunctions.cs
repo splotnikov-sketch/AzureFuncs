@@ -1,5 +1,4 @@
 using System.IO;
-using System.Net;
 using System.Threading.Tasks;
 using AzureFunctions.Commands.IsItPrime;
 using AzureFunctions.Infrastructure.Commands;
@@ -7,10 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
 namespace AzureFunctions.Functions
@@ -26,10 +22,6 @@ namespace AzureFunctions.Functions
 
 
         [FunctionName(nameof(IsItPrime))]
-        [OpenApiOperation(operationId: nameof(IsItPrime), tags: new[] { "math" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "number", In = ParameterLocation.Query, Required = true, Type = typeof(long), Description = "The **Number** parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(long), Description = "The OK response")]
         public async Task<IActionResult> IsItPrime([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "math/prime")] HttpRequest req, 
             ILogger log)
         {
